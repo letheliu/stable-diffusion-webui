@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+import leancloud
 
 from modules import timer
 from modules import initialize_util
@@ -14,6 +15,18 @@ initialize.imports()
 
 initialize.check_versions()
 
+def leancloud_login(username, password):
+    user = leancloud.User()
+    try:
+        user.login(username=username, password=password)
+    except leancloud.errors.LeanCloudError:
+        return False
+    else:
+        current_user = leancloud.User.get_current()
+        if current_user is not None:
+            return True
+        else:
+            return False
 
 def create_api(app):
     from modules.api.api import Api
@@ -50,6 +63,8 @@ def webui():
 
     launch_api = cmd_opts.api
     initialize.initialize()
+    
+    leancloud.init("Uk5EWNz39YRQekA7Qjw9wdov-gzGzoHsz", "tFVkJiDCUgkl6G1yIq5yt0dc")
 
     from modules import shared, ui_tempdir, script_callbacks, ui, progress, ui_extra_networks
 
@@ -78,13 +93,13 @@ def webui():
 
         app, local_url, share_url = shared.demo.launch(
             share=cmd_opts.share,
-            server_name=initialize_util.gradio_server_name(),
-            server_port=cmd_opts.port,
+            server_name="0.0.0.0",
+            server_port=7861,
             ssl_keyfile=cmd_opts.tls_keyfile,
             ssl_certfile=cmd_opts.tls_certfile,
             ssl_verify=cmd_opts.disable_tls_verify,
             debug=cmd_opts.gradio_debug,
-            auth=gradio_auth_creds,
+            auth=leancloud_login,
             inbrowser=auto_launch_browser,
             prevent_thread_lock=True,
             allowed_paths=cmd_opts.gradio_allowed_path,
