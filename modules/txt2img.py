@@ -19,8 +19,8 @@ def txt2img(id_task: str, prompt: str, negative_prompt: str, prompt_styles, step
     
     p = processing.StableDiffusionProcessingTxt2Img(
         sd_model=shared.sd_model,
-        outpath_samples=opts.outdir_samples or opts.outdir_txt2img_samples,
-        outpath_grids=opts.outdir_grids or opts.outdir_txt2img_grids,
+        outpath_samples=outdir_user_samples,
+        outpath_grids=outdir_user_grids,
         prompt=prompt,
         styles=prompt_styles,
         negative_prompt=negative_prompt,
